@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# krakenR
+# krakenR <img src="man/figures/logo.png" align="right" height="138" alt="" />
 
 <!-- badges: start -->
 
@@ -9,8 +9,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of krakenR is to simplify cohort-analysis of sample
-analysed with the kraken2 taxonomic classification system
+The goal of krakenR is to simplify cohort-analysis of sample analysed
+with the kraken2 taxonomic classification system
 
 ## Installation
 
