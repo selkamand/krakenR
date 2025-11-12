@@ -41,7 +41,7 @@ ancestor_table_to_lineage <- function(df){
 #' @export
 #'
 #' @examples
-#' inspect_file = system.file(package='utilitybeltkraken', "example_data/inspect_pluspf_20210517.txt")
+#' inspect_file = system.file(package='krakenR', "example_data/inspect_pluspf_20210517.txt")
 #' kraken_inspect_parse(inspect_file)
 kraken_inspect_parse_to_sqlite_db <- function(file, dbname_taxonomy = paste0(getwd(),"/kraken_taxonomic_database.sqlite"), dbname_heirarchy = paste0(getwd(),"/kraken_taxonomic_heirarchy.sqlite")){
   assertthat::assert_that(assertthat::is.string(file))

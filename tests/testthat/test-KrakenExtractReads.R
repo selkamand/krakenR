@@ -20,12 +20,12 @@ test_that("kraken_extract_reads works", {
   self_deleting_tempdir5 = withr::local_tempdir(pattern = "kraken_extract_reads")
   self_deleting_tempdir6 = withr::local_tempdir(pattern = "kraken_extract_reads")
 
-  kreport_path = system.file(package="utilitybeltkraken", "testfiles/e_coli_l_monocytogones_s_enterica_50seqs_each.minikraken8GB.kreport")
-  kraken_stdout_path = system.file(package="utilitybeltkraken", "testfiles/e_coli_l_monocytogones_s_enterica_50seqs_each.minikraken8GB.stdout")
+  kreport_path = system.file(package="krakenR", "testfiles/e_coli_l_monocytogones_s_enterica_50seqs_each.minikraken8GB.kreport")
+  kraken_stdout_path = system.file(package="krakenR", "testfiles/e_coli_l_monocytogones_s_enterica_50seqs_each.minikraken8GB.stdout")
 
-  kraken_input_seqs_fasta = system.file(package="utilitybeltkraken", "testfiles/e_coli_l_monocytogones_s_enterica_50seqs_each.fasta")
+  kraken_input_seqs_fasta = system.file(package="krakenR", "testfiles/e_coli_l_monocytogones_s_enterica_50seqs_each.fasta")
   kraken_input_seqs_invalid = "aajksdlajdlksajkldjawkljdakljwaadlkwjadwawddsalkfdsjkflenjcne"
-  kraken_input_seqs_fastq_gzip = system.file(package="utilitybeltkraken", "testfiles/e_coli_l_monocytogones_s_enterica_50seqs_each.fastq.gz")
+  kraken_input_seqs_fastq_gzip = system.file(package="krakenR", "testfiles/e_coli_l_monocytogones_s_enterica_50seqs_each.fastq.gz")
 
   sequence_outfile_prefix0 = paste0(self_deleting_tempdir0,"/", "kraken_extract_reads")
   sequence_outfile_prefix = paste0(self_deleting_tempdir,"/", "kraken_extract_reads")

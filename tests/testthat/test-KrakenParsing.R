@@ -1,6 +1,6 @@
 test_that("kraken_reports_parse works when reports include zero counts", {
 
-  kraken_report_dir = system.file(package = "utilitybeltkraken", "simulated_data/simulated_kraken_reports_inc_zero_counts/")
+  kraken_report_dir = system.file(package = "krakenR", "simulated_data/simulated_kraken_reports_inc_zero_counts/")
 
   # Runs without error
   expect_error(

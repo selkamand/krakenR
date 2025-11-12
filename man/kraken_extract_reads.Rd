@@ -43,11 +43,11 @@ Extract reads from a fastq/fasta that kraken has classified as belonging to some
 }
 \examples{
 \dontrun{
-kreport_path = system.file(package="utilitybeltkraken", "testfiles/DRR002014_1.100sequences.minikraken8GB.kreport")
-kraken_stdout_path = system.file(package="utilitybeltkraken", "testfiles/DRR002014_1.100sequences.minikraken8GB.stdout.tsv")
+kreport_path = system.file(package="krakenR", "testfiles/DRR002014_1.100sequences.minikraken8GB.kreport")
+kraken_stdout_path = system.file(package="krakenR", "testfiles/DRR002014_1.100sequences.minikraken8GB.stdout.tsv")
 kraken_input_seqs = c(
-  system.file(package="utilitybeltkraken", "testfiles/DRR002014_1.100sequences.fastq.gz"),
-  system.file(package="utilitybeltkraken", "testfiles/DRR002014_2.100sequences.fastq.gz")
+  system.file(package="krakenR", "testfiles/DRR002014_1.100sequences.fastq.gz"),
+  system.file(package="krakenR", "testfiles/DRR002014_2.100sequences.fastq.gz")
 )
 sequence_outfile_prefix = "mykrakenrun"
 

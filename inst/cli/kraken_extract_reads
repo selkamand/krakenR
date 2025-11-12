@@ -31,7 +31,7 @@ Options:
 
 
 library(docopt)
-library(utilitybeltkraken)
+library(krakenR)
 
 arguments <- docopt(doc)
 

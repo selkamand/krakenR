@@ -16,6 +16,6 @@ a data.table representation of the kraken inspect file.
 Parse a kraken inspect file
 }
 \examples{
-path <- system.file("example_data/inspect_pluspf_20210517.txt", package = "utilitybeltkraken")
+path <- system.file("example_data/inspect_pluspf_20210517.txt", package = "krakenR")
 kraken_inspect_parse(path)
 }

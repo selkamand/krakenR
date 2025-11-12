@@ -1,4 +1,4 @@
-#testkreport_path = system.file(package = "utilitybeltkraken", "DRR002014_1.100sequences.minikraken8GB.kreport")
+#testkreport_path = system.file(package = "krakenR", "DRR002014_1.100sequences.minikraken8GB.kreport")
 
 #' Get Child Taxids
 #'

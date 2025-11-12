@@ -56,7 +56,7 @@ kraken_report_parse <- function(path_to_kreport, sample_id = NULL, verbose = TRU
 #' @export
 #'
 #' @examples
-#' directory = system.file("simulated_data/simulated_kraken_reports", package = "utilitybeltkraken")
+#' directory = system.file("simulated_data/simulated_kraken_reports", package = "krakenR")
 #' kraken_reports_parse(directory)
 #'
 kraken_reports_parse <- function(kraken2directory){
@@ -211,7 +211,7 @@ kraken_calculate_proportion_of_signal_explained_by_n_strongest_taxids <- functio
 #' @export
 #'
 #' @examples
-#' path <- system.file("example_data/inspect_pluspf_20210517.txt", package = "utilitybeltkraken")
+#' path <- system.file("example_data/inspect_pluspf_20210517.txt", package = "krakenR")
 #' kraken_inspect_parse(path)
 kraken_inspect_parse <- function(path){
 

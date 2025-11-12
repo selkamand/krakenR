@@ -20,6 +20,6 @@ tibble representation of kraken inspect.
 Parse Kraken Inspect File
 }
 \examples{
-inspect_file = system.file(package='utilitybeltkraken', "example_data/inspect_pluspf_20210517.txt")
+inspect_file = system.file(package='krakenR', "example_data/inspect_pluspf_20210517.txt")
 kraken_inspect_parse(inspect_file)
 }

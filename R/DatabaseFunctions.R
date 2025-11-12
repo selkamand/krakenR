@@ -4,7 +4,7 @@
 #'
 #' @param database_name (If unsure leave defaults) name of sqlite database to create.
 #' @param table_name (If unsure leave defaults) name of kraken report dataframe table in sqlite database
-#' @param kraken_report_df dataframe from [utilitybeltkraken::kraken_reports_parse()]
+#' @param kraken_report_df dataframe from [krakenR::kraken_reports_parse()]
 #' @param overwrite overwrite existing database? (boolean)
 #'
 #' @return Name of the Database Created (string). Primarily Run for its side effects
@@ -98,10 +98,10 @@ kraken_report_to_sqlite_db = function(kraken_report_df, database_name = paste0(g
     ,"\n
 
     Connect to the database using the following code snippet:
-     kraken_db <- utilitybeltkraken::kraken_database_connect('",database_name,"')
+     kraken_db <- krakenR::kraken_database_connect('",database_name,"')
 
     When You're finished using the database, close the connection:
-    utilitybeltkraken::kraken_database_close_connection(kraken_db)
+    krakenR::kraken_database_close_connection(kraken_db)
     "
   )
   return(database_name)
@@ -114,7 +114,7 @@ kraken_report_to_sqlite_db = function(kraken_report_df, database_name = paste0(g
 #'
 #' @inheritDotParams kraken_report_to_sqlite_db
 #' @inheritParams kraken_reports_parse
-#' @param ... additional paramaaters to pass to [utilitybeltkraken::kraken_report_to_sqlite_db()]
+#' @param ... additional paramaaters to pass to [krakenR::kraken_report_to_sqlite_db()]
 #'
 #' @return database name
 #' @export

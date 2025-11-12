@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DIR="/Users/selkamand/projects/r_packages/utilitybeltkraken/inst/testfiles"
+DIR="/Users/selkamand/projects/r_packages/krakenR/inst/testfiles"
 Rscript kraken_extract_reads \
  --kreport_path $DIR/e_coli_l_monocytogones_s_enterica_50seqs_each.minikraken8GB.kreport \
  --kraken_stdout_path $DIR/e_coli_l_monocytogones_s_enterica_50seqs_each.minikraken8GB.stdout \

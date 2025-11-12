@@ -49,3 +49,19 @@ kraken_report_tabulate_hits <- function(kraken_report_df, rank = "S", zscore_rob
   #kraken_db |> kraken_report_tabulate_hits() |> dplyr::count(ScientificName, Confidence, sort = TRUE, name = "Recurrence")
   return(kreport_hits_df)
 }
+
+
+#
+# kreports_to_genus_species <- function(kraken_report_df){
+#   df_genus_counts <- kraken_report_df |>
+#     dplyr::filter(Rank == "G") |>
+#     dplyr::summarise(
+#       .by = c(SampleID, TaxonomyID, ScientificName), Reads = ReadsCoveredByClade
+#     )
+#
+#   df_species_counts <- kraken_report_df |>
+#     dplyr::filter(Rank == "G") |>
+#     dplyr::summarise(
+#       .by = c(SampleID, TaxonomyID, ScientificName), Reads = ReadsCoveredByClade
+#     )
+# }

@@ -46,18 +46,18 @@ Before leveraging this package, run kraken2 on each of your samples, making sure
 
 ```{r eval=FALSE}
 # install.packages("remotes")
-remotes::install_github("selkamand/utilitybeltkraken")
+remotes::install_github("selkamand/krakenR")
 ```
 
 ## Load libraries
 
 ```{r}
-library(utilitybeltkraken)
+library(krakenR)
 ```
 
 # Step 2: Read data
 
-`utilitybeltkraken` works by first reading a directory full of kraken reports into memory, running some basic computations, and writing the new data to an `SQLite ` database indexed to allow rapid analysis and visualization. 
+`krakenR` works by first reading a directory full of kraken reports into memory, running some basic computations, and writing the new data to an `SQLite ` database indexed to allow rapid analysis and visualization. 
 
 This is the longest step, and requires the most memory (but you only need to run once for a dataset). Currently, you must have sufficient RAM to fit all kraken report data into memory to succesfully run this step. This is in some ways unavoidable since we use information from the whole cohort to compute **Robust Z scores**. You'll learn more about these metrics later.
 
@@ -66,7 +66,7 @@ This is the longest step, and requires the most memory (but you only need to run
 
 You only need to run this the first time you analyse a dataset
 ```{r}
-krakenreport_directory <- system.file(package="utilitybeltkraken", "simulated_data/simulated_kraken_stdout_inc_zero_counts")
+krakenreport_directory <- system.file(package="krakenR", "simulated_data/simulated_kraken_stdout_inc_zero_counts")
 
 # kreport_database_path <- kraken_reports_parse_to_sqlite_db(
 #   krakenreport_directory = krakenreport_directory,

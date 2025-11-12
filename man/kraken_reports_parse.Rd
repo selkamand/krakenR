@@ -16,7 +16,7 @@ a dataframe describing all samples kraken reports
 To parse a single kraken report - see
 }
 \examples{
-directory = system.file("simulated_data/simulated_kraken_reports/")
+directory = system.file("simulated_data/simulated_kraken_reports", package = "krakenR")
 kraken_reports_parse(directory)
 
 }
