@@ -54,6 +54,11 @@ kraken_report_parse <- function(path_to_kreport, sample_id = NULL, verbose = TRU
 #'
 #' @return a dataframe describing all samples kraken reports
 #' @export
+#'
+#' @examples
+#' directory = system.file("simulated_data/simulated_kraken_reports", package = "utilitybeltkraken")
+#' kraken_reports_parse(directory)
+#'
 kraken_reports_parse <- function(kraken2directory){
 
   assertthat::assert_that(dir.exists(kraken2directory), msg = paste0("Could not find directory: ", kraken2directory))
