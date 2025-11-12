@@ -91,13 +91,13 @@ kraken_reports_parse <- function(kraken2directory){
   kraken_reports_df[, `:=`(RPM = ReadsCoveredByClade * 1e+06/TotalReadsInSample)]
 
 
-  return(kraken_reports_df)
+  return(kraken_reports_df[])
 }
 
 #' Identify Taxid Descendancy Status
 #'
 #' Identify taxids in your \strong{kraken_report_df} that are either equal to the user specified taxonomy ID or one of its descendants/children
-#' This is seful for telling what species are bacterial / viral / belong to a particular genus etc.
+#' This is useful for telling what species are bacterial / viral / belong to a particular genus etc.
 #' \strong{WARNING: } this function relies on inherent properties of kraken reports - make sure you run this ONLY on unsorted dataframes produced by \link{kraken_reports_parse} or link{kraken_report_parse}
 #'
 #'
@@ -143,7 +143,6 @@ kraken_report_add_descendancy_status <- function(kraken_report_df, taxid, column
     message("Adding Column: ", columname)
 
   kraken_report_df[columname] = seq_along(kraken_report_df$TaxonomyID) %in% indexes
-  #browser()
   return(kraken_report_df)
 }
 
@@ -178,8 +177,6 @@ kraken_calculate_proportion_of_signal_explained_by_n_strongest_taxids <- functio
     dplyr::distinct(SampleID, ReadsCoveredByClade,.keep_all = TRUE) %>%
     dplyr::select(SampleID, ReadsCoveredByParentClade = ReadsCoveredByClade)
 
-  #browser()
-
   kraken_report_with_descendancy_status %>%
     dplyr::filter(InParentClade==TRUE,Rank == rank) %>%
     dplyr::group_by(SampleID) %>%
@@ -198,8 +195,38 @@ kraken_calculate_proportion_of_signal_explained_by_n_strongest_taxids <- functio
       PercentageOfReadsInParentCladeCoveredByTopRankClade = ReadsCoveredByTopRankClade*100/ReadsCoveredByParentClade,
       RPM = ReadsCoveredByTopRankClade*1000000/ReadsCoveredByParentClade
       )
+}
 
 
+#' Parse a kraken inspect file
+#'
+#' @param path Path to file produced by k2 inspect
+#'
+#' @returns a data.table representation of the kraken inspect file.
+#' @export
+#'
+#' @examples
+#' path <- system.file("example_data/inspect_pluspf_20210517.txt", package = "utilitybeltkraken")
+#' kraken_inspect_parse(path)
+kraken_inspect_parse <- function(path){
+
+  dt <- data.table::fread(
+    file = path,
+    header = FALSE,
+    sep="\t", strip.white = FALSE,
+    col.names = c("PercentMinimisersCoveredByClade", "MinimisersCoveredByClade", "MinimisersDirectlyAssigned", "Rank", "TaxonomyID", "ScientificName")
+  )
+
+
+
+  #Use number of indents in scientific name to extrapolate depth
+  dt[, `:=` (Level = stringr::str_count(ScientificName, pattern = "  "))]
+
+
+  # Strip tabs from scientific name column
+  dt[, `:=` (ScientificName = stringr::str_replace(string = ScientificName, pattern = "^ +", replacement = ""))]
+
+  dt[]
 }
 
 #' Taxids of Interest
@@ -271,7 +298,7 @@ kraken_info_taxids_of_interest <- function(purpose = "info"){
       "Bacteria"  = 2,
       "Fungi" = 4751,
       "SAR" = 2698737,
-      message("\nNotes:\n> SAR is a subdomain of eukaryotic microbes that includes many eukaryotic microbes including protists")
+      message("\nNotes:\n> SAR is a subdomain of eukaryotic microbes that includes many eukaryotic microbes including protists (but also includes non-microbial organisms like kelp)")
       )
     message(paste0("[",humaninfectiondetection, "]", "\t\t",names(humaninfectiondetection), collapse = "\n"))
     return(invisible(humaninfectiondetection))
@@ -291,3 +318,5 @@ kraken_info_taxids_of_interest <- function(purpose = "info"){
 kraken_write_tsv <- function(kraken_report_df, filepath = paste0("kraken_report_database_",Sys.Date(), ".tsv")){
   data.table::fwrite(file = filepath, sep="\t")
 }
+
+

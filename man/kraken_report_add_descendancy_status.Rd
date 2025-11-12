@@ -28,6 +28,6 @@ This function returns the same dataframe from \strong{kraken_report_df} produced
 }
 \description{
 Identify taxids in your \strong{kraken_report_df} that are either equal to the user specified taxonomy ID or one of its descendants/children
-This is seful for telling what species are bacterial / viral / belong to a particular genus etc.
+This is useful for telling what species are bacterial / viral / belong to a particular genus etc.
 \strong{WARNING: } this function relies on inherent properties of kraken reports - make sure you run this ONLY on unsorted dataframes produced by \link{kraken_reports_parse} or link{kraken_report_parse}
 }
