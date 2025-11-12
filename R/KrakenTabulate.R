@@ -43,7 +43,7 @@ kraken_report_tabulate_hits <- function(kraken_report_df, rank = "S", zscore_rob
     dplyr::add_count(TaxonomyID, name = "Recurrence") |>
     dplyr::select(
       ScientificName, TaxonomyID, Confidence, ZscoreRobust, ReadsCoveredByClade,Recurrence,SampleID, Rank
-      )
+    )
 
 
   #kraken_db |> kraken_report_tabulate_hits() |> dplyr::count(ScientificName, Confidence, sort = TRUE, name = "Recurrence")
