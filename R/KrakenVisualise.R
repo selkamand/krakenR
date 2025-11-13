@@ -518,7 +518,7 @@ fetch_last_index_with_lower_level <- function(prev_taxid_at_level, current_level
 #' @param insidetextorientation Text orientation for labels inside the
 #'   sunburst sectors. Must be one of \code{"horizontal"}, \code{"radial"} or
 #'   \code{"tangential"}. Passed to \code{\link[plotly]{plot_ly}}.
-#'
+#' @param return_data Instead of returning the htmlwidget plot, return the data
 #' @returns A \code{plotly} object representing the sunburst plot.
 #'
 #' @export
@@ -538,7 +538,7 @@ fetch_last_index_with_lower_level <- function(prev_taxid_at_level, current_level
 #'   sample = first_sample,
 #'   ranks = c("F", "G", "S")
 #' )
-kraken_visualise_sunburst <- function(kraken_report_df, sample, ranks = c("F", "G", "S"), ancestor = "Ancestor", insidetextorientation = c("horizontal", "radial", "tangential")){
+kraken_visualise_sunburst <- function(kraken_report_df, sample, ranks = c("F", "G", "S"), ancestor = "Ancestor", insidetextorientation = c("horizontal", "radial", "tangential"), return_data = FALSE){
   insidetextorientation <- rlang::arg_match(insidetextorientation)
 
   # Subset and Annotate
@@ -546,8 +546,11 @@ kraken_visualise_sunburst <- function(kraken_report_df, sample, ranks = c("F", "
     dplyr::filter(SampleID %in% sample, Rank %in% ranks, ReadsCoveredByClade > 0) |>
     kraken_annotate_parents(ancestor = ancestor)
 
+  if(return_data)
+    return(kraken_report_annotated)
+
   # Step2: Create sunburst
-  plot_ly(
+  plotly::plot_ly(
     type = "sunburst",
     labels = kraken_report_annotated$ScientificName,
     parents = kraken_report_annotated$ParentScientificName,

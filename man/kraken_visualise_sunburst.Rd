@@ -9,7 +9,8 @@ kraken_visualise_sunburst(
   sample,
   ranks = c("F", "G", "S"),
   ancestor = "Ancestor",
-  insidetextorientation = c("horizontal", "radial", "tangential")
+  insidetextorientation = c("horizontal", "radial", "tangential"),
+  return_data = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ ancestor when no parent taxon exists (passed to
 \item{insidetextorientation}{Text orientation for labels inside the
 sunburst sectors. Must be one of \code{"horizontal"}, \code{"radial"} or
 \code{"tangential"}. Passed to \code{\link[plotly]{plot_ly}}.}
+
+\item{return_data}{Instead of returning the htmlwidget plot, return the data}
 }
 \value{
 A \code{plotly} object representing the sunburst plot.
