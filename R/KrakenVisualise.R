@@ -394,17 +394,167 @@ kraken_report_tsne <- function(kraken_report_df){
 }
 
 
-# kraken_report_visualise_single_sample_sunbursts <- function(kraken_report_df, sample_id, rank){
-#   rlang::check_installed("taxizedbextra", reason = "to use `taxizedbextra::taxid2lineage()`")
-#   rlang::check_installed("sunburst", reason = "to use `lineage2sunburst()`")
-#
-#   kraken_report_df |>
-#     dplyr::filter(SampleID == sample_id, Rank == rank) |>
-#      dplyr::collect() |>
-#     dplyr::mutate(lineage = taxizedbextra::taxid2lineage(
-#     ultimate_ancestor = sample_id,
-#     taxids = TaxonomyID,
-#     ranks_to_include =c("genus","species")
-#     )) # taxid2lineage doesnt work here due to kraken taxonomy IDs not necessarily matching the
-#
-# }
+kraken_report_visualise_single_sample_sunbursts <- function(kraken_report_df, sample_id, ranks = c("G", "S")){
+  # rlang::check_installed("taxizedbextra", reason = "to use `taxizedbextra::taxid2lineage()`")
+  # rlang::check_installed("sunburst", reason = "to use `lineage2sunburst()`")
+
+
+  kraken_report_df |>
+    dplyr::filter(SampleID == sample_id, Rank %in% ranks) |>
+    dplyr::collect() |>
+    dplyr::mutate(
+      parent =
+    )
+}
+
+#' Annotate kraken dataframes with parent taxids
+#'
+#' @param kraken_report_df the kraken dataframe produced by \link{kraken_reports_parse} or link{kraken_report_parse}.
+#' Can be filtered to include only ranks of interest (e.g. just genus and species) but must not be sorted in any way. (relies on default sample order).
+#'
+#' @returns a kraken data.frame with ParentTaxonomyID and ParentScientificName columns added
+#' @export
+#'
+#' @examples
+#' # Read in all kraken reports from a directory into a data.frame
+#' kreport_dir <- system.file(package="krakenR", "simulated_data/simulated_kraken_reports_inc_zero_counts/")
+#' df_kreports <- kraken_reports_parse(kreport_dir)
+#'
+#' # Annotate parent taxids (useful for sunburst visualisation)
+#' df_kreports <- kraken_annotate_parents(df_kreports)
+#'
+kraken_annotate_parents <- function(kraken_report_df, ancestor = "Ancestor"){
+  Level <- kraken_report_df$Level
+  SampleID <- kraken_report_df$SampleID
+  TaxonomyID <- kraken_report_df$TaxonomyID
+  # ScientificName <- kraken_report_df$ScientificName
+  prev_level = Level[1]
+  prev_sample = SampleID[1]
+
+  nrows = nrow(kraken_report_df)
+  prev_taxid_at_level = numeric()
+  parent_taxids = numeric(nrows)
+
+  for (i in seq_len(nrows)){
+    # message("Completed: ", i, "/", nrows)
+
+    # When sample Changes reset prev_taxid_levels
+    if(SampleID[i] != prev_sample){ prev_taxid_at_level <- numeric()} # If sample changed
+
+    if(i == 1) {
+      # If first row just set parent taxid to Inf
+      parent_taxids[i] <- Inf
+    }
+    else{
+      # Grab Current Level
+      current_level = Level[i]
+
+      # Lookup the last taxid which was higher ranked (lower level)
+      parent_taxid = fetch_last_index_with_lower_level(prev_taxid_at_level, current_level=current_level)
+
+      # If NULL replace with Inf
+      parent_taxid <- if(is.na(parent_taxid)) Inf else parent_taxid
+
+      # Update ls_parent_taxids
+      parent_taxids[i] <- parent_taxid
+    }
+
+    # Update
+    prev_taxid_at_level[Level[i]] <- TaxonomyID[i]
+    prev_sample = SampleID[i]
+  }
+
+  kraken_report_df$ParentTaxonomyID <- parent_taxids
+
+  # Add Scientific Name Lookup
+  ## A) Build a unique lookup of TaxonomyID -> ScientificName
+  idx_unique <- !duplicated(kraken_report_df$TaxonomyID)
+  lookup_taxid <- kraken_report_df$TaxonomyID[idx_unique]
+  lookup_name  <- kraken_report_df$ScientificName[idx_unique]
+
+  # B) Match parent_taxid to this lookup
+  m <- match(kraken_report_df$ParentTaxonomyID, lookup_taxid)
+  kraken_report_df$ParentScientificName <- lookup_name[m]
+  kraken_report_df$ParentScientificName[is.na(kraken_report_df$ParentScientificName)] <- ancestor
+  return(kraken_report_df)
+}
+
+fetch_last_index_with_lower_level <- function(prev_taxid_at_level, current_level){
+  levels_observed = seq_along(prev_taxid_at_level)
+
+  # If no lower level (higher ranked) observations were seen - return NULL
+  if(all(levels_observed >= current_level)) return(NaN)
+
+  # Get the highest level thats still lower than current
+  highest_valid_level <- max(levels_observed[levels_observed <  current_level])
+
+  # Return the taxonomy ID of that level
+  taxid=prev_taxid_at_level[highest_valid_level]
+  return(taxid)
+}
+
+
+#' Visualise Kraken classifications as a sunburst plot
+#'
+#' Creates an interactive sunburst plot of Kraken classification results for one
+#' or more samples. Each ring represents a taxonomic rank and segment sizes are
+#' proportional to \code{ReadsCoveredByClade}. Parent–child relationships are
+#' inferred using \code{\link{kraken_annotate_parents}}.
+#'
+#' @param kraken_report_df A Kraken report data.frame produced by
+#'   \code{\link{kraken_reports_parse}} or \code{\link{kraken_report_parse}}.
+#'   The data must contain at least the columns \code{SampleID}, \code{Rank},
+#'   \code{ScientificName}, \code{TaxonomyID}, \code{Level} and
+#'   \code{ReadsCoveredByClade}. The data can be pre-filtered to ranks of
+#'   interest but must not be resorted from its original Kraken order.
+#' @param sample Character vector giving one or more sample IDs (matching the
+#'   \code{SampleID} column) to include in the plot.
+#' @param ranks Character vector of rank codes to include (as stored in the
+#'   \code{Rank} column), for example \code{c("F", "G", "S")} for family, genus
+#'   and species.
+#' @param ancestor Character scalar used as the label for the inferred root
+#'   ancestor when no parent taxon exists (passed to
+#'   \code{\link{kraken_annotate_parents}}). Defaults to \code{"Ancestor"}.
+#' @param insidetextorientation Text orientation for labels inside the
+#'   sunburst sectors. Must be one of \code{"horizontal"}, \code{"radial"} or
+#'   \code{"tangential"}. Passed to \code{\link[plotly]{plot_ly}}.
+#'
+#' @returns A \code{plotly} object representing the sunburst plot.
+#'
+#' @export
+#'
+#' @examples
+#' # Read in all kraken reports from a directory into a data.frame
+#' kreport_dir <- system.file(
+#'   package = "krakenR",
+#'   "simulated_data/simulated_kraken_reports_inc_zero_counts/"
+#' )
+#' df_kreports <- kraken_reports_parse(kreport_dir)
+#'
+#' # Visualise the first sample as a sunburst at family, genus and species level
+#' first_sample <- unique(df_kreports$SampleID)[1]
+#' kraken_visualise_sunburst(
+#'   df_kreports,
+#'   sample = first_sample,
+#'   ranks = c("F", "G", "S")
+#' )
+kraken_visualise_sunburst <- function(kraken_report_df, sample, ranks = c("F", "G", "S"), ancestor = "Ancestor", insidetextorientation = c("horizontal", "radial", "tangential")){
+  insidetextorientation <- rlang::arg_match(insidetextorientation)
+
+  # Subset and Annotate
+  kraken_report_annotated <- kraken_report_df |>
+    dplyr::filter(SampleID %in% sample, Rank %in% ranks, ReadsCoveredByClade > 0) |>
+    kraken_annotate_parents(ancestor = ancestor)
+
+  # Step2: Create sunburst
+  plot_ly(
+    type = "sunburst",
+    labels = kraken_report_annotated$ScientificName,
+    parents = kraken_report_annotated$ParentScientificName,
+    values = kraken_report_annotated$ReadsCoveredByClade,
+    insidetextorientation = insidetextorientation
+  )
+
+}
+
+

@@ -30,7 +30,39 @@ You can install the development version of krakenR from [GitHub](https://github.
 devtools::install_github("selkamand/krakenR")
 ```
 
-## Usage
+## Quick Start
+
+```{r}
+library(krakenR)
+
+# Read in all kraken reports from a directory into a data.frame
+kreport_dir <- system.file(package="krakenR", "simulated_data/simulated_kraken_reports_inc_zero_counts/")
+df_kreports <- kraken_reports_parse(kreport_dir)
+
+# Print Data
+df_kreports
+```
+
+## Visualising Results
+
+```{r}
+library(plotly)
+
+sunburst <- kraken_visualise_sunburst(df_kreports, sample = "e_coli_1", ranks = c("F", "G", "S"), ancestor = "E. coli\nSample", insidetextorientation = "tangential")
+
+print(sunburst)
+```
+
+### Custom Visualisations
+```{r}
+# If building more custom visualisations you may need to annotate the kraken datasets with their 'parent' species. You can do this using the kraken_annotate_parents commands
+df_kreports_annotated <- df_kreports |>
+  filter(Rank %in% c("F", "G", "S")) |>
+  kraken_annotate_parents(ancestor = "Ancestor")
+```
+
+
+## Storing as a database
 
 
 ```{r, eval=FALSE}
