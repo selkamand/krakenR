@@ -107,51 +107,79 @@ kraken_reports_parse <- function(kraken2directory){
 #'
 #'
 #' @param kraken_report_df an UNSORTED kraken report dataframe produced by \link{kraken_reports_parse} or link{kraken_report_parse}
-#' @param taxid ncbi taxonomic id (integer)
-#' @param careful should we do a bunch of quality assertions (slight speed overhead) (flag)
+#' @param taxid ncbi taxonomic id (integer). If you supply a numeric vector then we check whether taxids belong to ANY of the ones supplied.
 #' @param columname name of the column to add to the dataframe
+#' @param inclusive include the supplied taxid.
+#' @param verbose print more informative messages
 #'
+#' @return This function returns the same dataframe from \strong{kraken_report_df} produced by \link{kraken_reports_parse} or link{kraken_report_parse}  but with  a new columns describing inclusive descendency status to a particular taxid (logical vector)
+#' @export
+#'
+kraken_report_add_descendancy_status <- function(kraken_report_df, taxid, columname="is_descendent", inclusive = TRUE, verbose = T){
+
+  ls_child_taxids <- lapply(unique(taxid), function(t){ kraken_fetch_child_taxids(kraken_report_df, taxid = t, inclusive = inclusive) })
+  child_taxids <- unique(unlist(ls_child_taxids))
+  # child_taxids <- kraken_fetch_child_taxids(kraken_report_df, taxid = taxid, inclusive = inclusive)
+
+  kraken_report_df[[columname]] <- kraken_report_df[["TaxonomyID"]] %in% child_taxids
+
+  return(kraken_report_df)
+}
+
+
+#' Fetch Child Taxids
+#'
+#' Identify taxids in your \strong{kraken_report_df} that are either equal to the user specified taxonomy ID or one of its descendants/children
+#' This is useful for telling what species are bacterial / viral / belong to a particular genus etc.
+#' \strong{WARNING: } this function relies on inherent properties of kraken reports - make sure you run this ONLY on unsorted dataframes produced by \link{kraken_reports_parse} or link{kraken_report_parse}
+#'
+#'
+#' @param kraken_report_df an UNSORTED kraken report dataframe produced by \link{kraken_reports_parse} or link{kraken_report_parse}
+#' @param taxid ncbi taxonomic id (integer)
+#' @param inclusive include the supplied taxid.
 #' @param verbose print more informative messages
 #'
 #' @return This function returns the same dataframe from \strong{kraken_report_df} produced by \link{kraken_reports_parse} or link{kraken_report_parse}  but with  a new columns describing inclusive descendancey status to a particular taxid
 #' @export
 #'
-kraken_report_add_descendancy_status <- function(kraken_report_df, taxid, columname=NA, careful=TRUE, verbose = T){
-  assertthat::assert_that(assertthat::is.flag(careful))
+kraken_fetch_child_taxids <- function(kraken_report_df, taxid, inclusive = TRUE){
 
-  if(careful){
-    assertthat::assert_that(assertthat::is.number(taxid))
-    assertthat::assert_that(is.data.frame(kraken_report_df))
-    assertthat::assert_that(assertthat::has_name(kraken_report_df, c("TaxonomyID", "Level", "SampleID", "ReadsCoveredByClade", "ScientificName")))
-    assertthat::assert_that(taxid %in% kraken_report_df[["TaxonomyID"]])
-    assertthat::assert_that(dplyr::n_distinct(table(kraken_report_df[["TaxonomyID"]])) == 1, msg = "Some Taxonomy Ids appear more than others. Its likely you haven't used --report-zero-counts. I would advise you add this flag as it makes it very easy to catch problems arising from different databases. All the functions in this package will still work fine - just run this code again with the option careful=FALSE")
-    assertthat::assert_that(!is.unsorted(kraken_report_df[["SampleID"]]))
+  levels  <- kraken_report_df$Level
+  taxids  <- kraken_report_df$TaxonomyID
 
+  # Locate first occurrence
+  start <- match(taxid, taxids)
+  if (is.na(start)) return(numeric(0))
+
+  target_level <- levels[start]
+  last_low_level_was_target <- TRUE
+
+  n <- length(taxids)
+  is_child <- logical(n)   # mask to mark children
+
+  for (i in start:n) {
+
+    if (taxids[i] == taxid) {
+      # reset the chain whenever we see the target taxid again
+      last_low_level_was_target <- TRUE
+      next
+    }
+
+    lvl <- levels[i]
+
+    if (lvl > target_level && last_low_level_was_target) {
+      # mark as child
+      is_child[i] <- TRUE
+    } else if (lvl <= target_level) {
+      # chain broken
+      last_low_level_was_target <- FALSE
+    }
   }
 
-  taxid_index = which(taxid == kraken_report_df$TaxonomyID)
-  taxid_level = unique(kraken_report_df$Level[taxid_index])
-  if(length(taxid_level) > 1) stop("Found inconsistencies in krakenreport formating -- same taxid is at different levels for different samples. Are you sure you ran all samples against the same database")
-  terminating_indexes = which(kraken_report_df$Level <= taxid_level)
-  terminating_indexes = terminating_indexes[!terminating_indexes %in% taxid_index]-1
-  lastSampleEntry=which(c(kraken_report_df$SampleID[-length(kraken_report_df$SampleID)] != kraken_report_df$SampleID[-1], TRUE))
-  terminating_indexes = sort.int(c(terminating_indexes, lastSampleEntry), decreasing = FALSE)
-
-  matching_terminating_indexes = purrr::map_int(taxid_index, ~as.integer(terminating_indexes[terminating_indexes >= .x])[1])
-
-  indexes <- as.vector(sapply(seq_along(taxid_index), FUN = function(i){taxid_index[i]:matching_terminating_indexes[i]}))
-
-  if(is.na(columname))
-    columname = paste0("DescendancyFrom", gsub(x=kraken_report_df$ScientificName[match(taxid, kraken_report_df$TaxonomyID)], pattern = " ", replacement = "_"))
-
-  if (verbose)
-    message("Adding Column: ", columname)
-
-  kraken_report_df[columname] = seq_along(kraken_report_df$TaxonomyID) %in% indexes
-  return(kraken_report_df)
+  out <- taxids[is_child]
+  if (inclusive) out <- c(taxid, out)
+  return(out)
 }
-
-
 
 #' Quantifying Signal Spread Across Taxid
 #'
