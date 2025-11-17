@@ -4,10 +4,10 @@
 \alias{kraken_fetch_child_taxids}
 \title{Fetch Child Taxids}
 \usage{
-kraken_fetch_child_taxids(kraken_report_df, taxid, inclusive = TRUE)
+kraken_fetch_child_taxids(taxonomy, taxid, inclusive = FALSE)
 }
 \arguments{
-\item{kraken_report_df}{an UNSORTED kraken report dataframe produced by \link{kraken_reports_parse} or link{kraken_report_parse}}
+\item{taxonomy}{a taxonomy object produce by \code{\link[=kraken_taxonomy_parse]{kraken_taxonomy_parse()}}}
 
 \item{taxid}{ncbi taxonomic id (integer)}
 

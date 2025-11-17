@@ -43,22 +43,47 @@ df_kreports <- kraken_reports_parse(kreport_dir)
 df_kreports
 ```
 
+## Taxonomy
+
+A lot of downstream functions (including visualisations) will require taxonomy information. 
+
+This can be read from 'ktaxoonomy.tsv' files present in Langmead et al. precompiled Kraken databases (>2023) or generated for any kraken database using [krakentools](https://github.com/jenniferlu717/KrakenTools?tab=readme-ov-file#make_ktaxonomypy).
+
+Once parsed, this taxonomy object will be used in many other functions
+
+```{r}
+path_ktaxonomy <- system.file("example_data/ktaxonomy.tsv", package = "krakenR")
+taxonomy <- kraken_taxonomy_parse(path_ktaxonomy)
+```
+
+
 ## Visualising Results
 
 ```{r}
 library(plotly)
 
-sunburst <- kraken_visualise_sunburst(df_kreports, sample = "e_coli_1", ranks = c("F", "G", "S"), ancestor = "E. coli\nSample", insidetextorientation = "tangential")
+sunburst <- kraken_visualise_sunburst(
+  df_kreports, 
+  taxonomy = taxonomy, 
+  sample = "e_coli_1", 
+  # ranks = c("S", "G", "F", "D", "R2"), 
+  ancestor = "E. coli\nSample", 
+  insidetextorientation = "tangential"
+)
 
-print(sunburst)
+sunburst
 ```
 
 ### Custom Visualisations
 ```{r}
 # If building more custom visualisations you may need to annotate the kraken datasets with their 'parent' species. You can do this using the kraken_annotate_parents commands
+ranks_of_interest <- c("S", "G", "F")
 df_kreports_annotated <- df_kreports |>
-  filter(Rank %in% c("F", "G", "S")) |>
-  kraken_annotate_parents(ancestor = "Ancestor")
+  filter(Rank %in% ranks_of_interest) |>
+  kraken_annotate_parents(
+    taxonomy = taxonomy, 
+    ancestor = "Ancestor"
+  )
 ```
 
 

@@ -6,22 +6,22 @@
 \usage{
 kraken_report_add_descendancy_status(
   kraken_report_df,
+  taxonomy,
   taxid,
-  columname = "is_descendent",
-  inclusive = TRUE,
-  verbose = T
+  colname = "is_descendent",
+  inclusive = TRUE
 )
 }
 \arguments{
 \item{kraken_report_df}{an UNSORTED kraken report dataframe produced by \link{kraken_reports_parse} or link{kraken_report_parse}}
 
+\item{taxonomy}{a taxonomy object returned by  \code{\link[=kraken_taxonomy_parse]{kraken_taxonomy_parse()}}}
+
 \item{taxid}{ncbi taxonomic id (integer). If you supply a numeric vector then we check whether taxids belong to ANY of the ones supplied.}
 
-\item{columname}{name of the column to add to the dataframe}
+\item{colname}{name of the column to add to the dataframe}
 
 \item{inclusive}{include the supplied taxid.}
-
-\item{verbose}{print more informative messages}
 }
 \value{
 This function returns the same dataframe from \strong{kraken_report_df} produced by \link{kraken_reports_parse} or link{kraken_report_parse}  but with  a new columns describing inclusive descendency status to a particular taxid (logical vector)
@@ -30,4 +30,17 @@ This function returns the same dataframe from \strong{kraken_report_df} produced
 Identify taxids in your \strong{kraken_report_df} that are either equal to the user specified taxonomy ID or one of its descendants/children
 This is useful for telling what species are bacterial / viral / belong to a particular genus etc.
 \strong{WARNING: } this function relies on inherent properties of kraken reports - make sure you run this ONLY on unsorted dataframes produced by \link{kraken_reports_parse} or link{kraken_report_parse}
+}
+\examples{
+# Read in all kraken reports from a directory into a data.frame
+kreport_dir <- system.file(package="krakenR", "simulated_data/simulated_kraken_reports_inc_zero_counts/")
+df_kreports <- kraken_reports_parse(kreport_dir)
+
+# Read in Kraken Taxonomy
+path_ktaxonomy <- system.file("example_data/ktaxonomy.tsv", package = "krakenR")
+taxonomy <- kraken_taxonomy_parse(path_ktaxonomy)
+
+# Add descendency status
+kraken_report_add_descendancy_status(df_kreports, taxonomy, taxid=2, colname = "is_bacterial", inclusive = TRUE)
+
 }

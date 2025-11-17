@@ -6,9 +6,10 @@
 \usage{
 kraken_visualise_sunburst(
   kraken_report_df,
+  taxonomy,
   sample,
-  ranks = c("F", "G", "S"),
-  ancestor = "Ancestor",
+  ranks = c("S", "G", "F", "O", "C", "P", "K", "D"),
+  ancestor = sample,
   insidetextorientation = c("horizontal", "radial", "tangential"),
   return_data = FALSE
 )
@@ -55,11 +56,16 @@ kreport_dir <- system.file(
 )
 df_kreports <- kraken_reports_parse(kreport_dir)
 
+# Read in taxonomy
+path <- system.file("example_data/ktaxonomy.tsv", package = "krakenR")
+taxonomy <- kraken_taxonomy_parse(path)
+
 # Visualise the first sample as a sunburst at family, genus and species level
 first_sample <- unique(df_kreports$SampleID)[1]
 kraken_visualise_sunburst(
   df_kreports,
+  taxonomy = taxonomy,
   sample = first_sample,
-  ranks = c("F", "G", "S")
+  ranks = c("S", "F", "G")
 )
 }

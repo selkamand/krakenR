@@ -407,77 +407,63 @@ kraken_report_visualise_single_sample_sunbursts <- function(kraken_report_df, sa
     )
 }
 
-#' Annotate kraken dataframes with parent taxids
-#'
-#' @param kraken_report_df the kraken dataframe produced by \link{kraken_reports_parse} or link{kraken_report_parse}.
-#' Can be filtered to include only ranks of interest (e.g. just genus and species) but must not be sorted in any way. (relies on default sample order).
-#'
-#' @returns a kraken data.frame with ParentTaxonomyID and ParentScientificName columns added
-#' @export
-#'
-#' @examples
-#' # Read in all kraken reports from a directory into a data.frame
-#' kreport_dir <- system.file(package="krakenR", "simulated_data/simulated_kraken_reports_inc_zero_counts/")
-#' df_kreports <- kraken_reports_parse(kreport_dir)
-#'
-#' # Annotate parent taxids (useful for sunburst visualisation)
-#' df_kreports <- kraken_annotate_parents(df_kreports)
-#'
-kraken_annotate_parents <- function(kraken_report_df, ancestor = "Ancestor"){
-  Level <- kraken_report_df$Level
-  SampleID <- kraken_report_df$SampleID
-  TaxonomyID <- kraken_report_df$TaxonomyID
-  # ScientificName <- kraken_report_df$ScientificName
-  prev_level = Level[1]
-  prev_sample = SampleID[1]
 
-  nrows = nrow(kraken_report_df)
-  prev_taxid_at_level = numeric()
-  parent_taxids = numeric(nrows)
 
-  for (i in seq_len(nrows)){
-    # message("Completed: ", i, "/", nrows)
-
-    # When sample Changes reset prev_taxid_levels
-    if(SampleID[i] != prev_sample){ prev_taxid_at_level <- numeric()} # If sample changed
-
-    if(i == 1) {
-      # If first row just set parent taxid to Inf
-      parent_taxids[i] <- Inf
-    }
-    else{
-      # Grab Current Level
-      current_level = Level[i]
-
-      # Lookup the last taxid which was higher ranked (lower level)
-      parent_taxid = fetch_last_index_with_lower_level(prev_taxid_at_level, current_level=current_level)
-
-      # If NULL replace with Inf
-      parent_taxid <- if(is.na(parent_taxid)) Inf else parent_taxid
-
-      # Update ls_parent_taxids
-      parent_taxids[i] <- parent_taxid
-    }
-
-    # Update
-    prev_taxid_at_level[Level[i]] <- TaxonomyID[i]
-    prev_sample = SampleID[i]
-  }
-
-  kraken_report_df$ParentTaxonomyID <- parent_taxids
-
-  # Add Scientific Name Lookup
-  ## A) Build a unique lookup of TaxonomyID -> ScientificName
-  idx_unique <- !duplicated(kraken_report_df$TaxonomyID)
-  lookup_taxid <- kraken_report_df$TaxonomyID[idx_unique]
-  lookup_name  <- kraken_report_df$ScientificName[idx_unique]
-
-  # B) Match parent_taxid to this lookup
-  m <- match(kraken_report_df$ParentTaxonomyID, lookup_taxid)
-  kraken_report_df$ParentScientificName <- lookup_name[m]
-  kraken_report_df$ParentScientificName[is.na(kraken_report_df$ParentScientificName)] <- ancestor
-  return(kraken_report_df)
-}
+# kraken_annotate_parents <- function(kraken_report_df, ancestor = "Ancestor"){
+#   Level <- kraken_report_df$Level
+#   SampleID <- kraken_report_df$SampleID
+#   TaxonomyID <- kraken_report_df$TaxonomyID
+#   # ScientificName <- kraken_report_df$ScientificName
+#   prev_level = Level[1]
+#   prev_sample = SampleID[1]
+#
+#   nrows = nrow(kraken_report_df)
+#   prev_taxid_at_level = numeric()
+#   parent_taxids = numeric(nrows)
+#
+#   for (i in seq_len(nrows)){
+#     # message("Completed: ", i, "/", nrows)
+#
+#     # When sample Changes reset prev_taxid_levels
+#     if(SampleID[i] != prev_sample){ prev_taxid_at_level <- numeric()} # If sample changed
+#
+#     if(i == 1) {
+#       # If first row just set parent taxid to Inf
+#       parent_taxids[i] <- Inf
+#     }
+#     else{
+#       # Grab Current Level
+#       current_level = Level[i]
+#
+#       # Lookup the last taxid which was higher ranked (lower level)
+#       parent_taxid = fetch_last_index_with_lower_level(prev_taxid_at_level, current_level=current_level)
+#
+#       # If NULL replace with Inf
+#       parent_taxid <- if(is.na(parent_taxid)) Inf else parent_taxid
+#
+#       # Update ls_parent_taxids
+#       parent_taxids[i] <- parent_taxid
+#     }
+#
+#     # Update
+#     prev_taxid_at_level[Level[i]] <- TaxonomyID[i]
+#     prev_sample = SampleID[i]
+#   }
+#
+#   kraken_report_df$ParentTaxonomyID <- parent_taxids
+#
+#   # Add Scientific Name Lookup
+#   ## A) Build a unique lookup of TaxonomyID -> ScientificName
+#   idx_unique <- !duplicated(kraken_report_df$TaxonomyID)
+#   lookup_taxid <- kraken_report_df$TaxonomyID[idx_unique]
+#   lookup_name  <- kraken_report_df$ScientificName[idx_unique]
+#
+#   # B) Match parent_taxid to this lookup
+#   m <- match(kraken_report_df$ParentTaxonomyID, lookup_taxid)
+#   kraken_report_df$ParentScientificName <- lookup_name[m]
+#   kraken_report_df$ParentScientificName[is.na(kraken_report_df$ParentScientificName)] <- ancestor
+#   return(kraken_report_df)
+# }
 
 fetch_last_index_with_lower_level <- function(prev_taxid_at_level, current_level){
   levels_observed = seq_along(prev_taxid_at_level)
@@ -531,20 +517,33 @@ fetch_last_index_with_lower_level <- function(prev_taxid_at_level, current_level
 #' )
 #' df_kreports <- kraken_reports_parse(kreport_dir)
 #'
+#' # Read in taxonomy
+#' path <- system.file("example_data/ktaxonomy.tsv", package = "krakenR")
+#' taxonomy <- kraken_taxonomy_parse(path)
+#'
 #' # Visualise the first sample as a sunburst at family, genus and species level
 #' first_sample <- unique(df_kreports$SampleID)[1]
 #' kraken_visualise_sunburst(
 #'   df_kreports,
+#'   taxonomy = taxonomy,
 #'   sample = first_sample,
-#'   ranks = c("F", "G", "S")
+#'   ranks = c("S", "F", "G")
 #' )
-kraken_visualise_sunburst <- function(kraken_report_df, sample, ranks = c("F", "G", "S"), ancestor = "Ancestor", insidetextorientation = c("horizontal", "radial", "tangential"), return_data = FALSE){
+kraken_visualise_sunburst <- function(kraken_report_df, taxonomy, sample,
+                                      ranks = c("S", "G", "F", "O", "C", "P", "K", "D"),
+                                      ancestor = sample, insidetextorientation = c("horizontal", "radial", "tangential"), return_data = FALSE){
   insidetextorientation <- rlang::arg_match(insidetextorientation)
+
+  # Create reduced taxonomy with just the ranks we care about
+
+  # taxonomy_reduced <- collapse_taxonomy_to_ranks(taxonomy, valid_ranks = ranks)
 
   # Subset and Annotate
   kraken_report_annotated <- kraken_report_df |>
-    dplyr::filter(SampleID %in% sample, Rank %in% ranks, ReadsCoveredByClade > 0) |>
-    kraken_annotate_parents(ancestor = ancestor)
+    dplyr::filter(SampleID == sample, Rank %in% ranks, ReadsCoveredByClade > 0) |>
+    kraken_annotate_parents_at_ranks(ancestor = ancestor, taxonomy = taxonomy, ranks = ranks)
+
+  browser()
 
   if(return_data)
     return(kraken_report_annotated)
