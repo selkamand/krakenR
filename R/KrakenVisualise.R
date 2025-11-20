@@ -543,8 +543,6 @@ kraken_visualise_sunburst <- function(kraken_report_df, taxonomy, sample,
     dplyr::filter(SampleID == sample, Rank %in% ranks, ReadsCoveredByClade > 0) |>
     kraken_annotate_parents_at_ranks(ancestor = ancestor, taxonomy = taxonomy, ranks = ranks)
 
-  browser()
-
   if(return_data)
     return(kraken_report_annotated)
 
