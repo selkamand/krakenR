@@ -134,7 +134,6 @@ kraken_report_add_descendancy_status <- function(kraken_report_df, taxonomy, tax
 
   ls_child_taxids <- lapply(unique(taxid), function(t){ kraken_fetch_child_taxids(taxonomy, taxid = taxid, inclusive=inclusive)})
   child_taxids <- unique(unlist(ls_child_taxids))
-  # child_taxids <- kraken_fetch_child_taxids(kraken_report_df, taxid = taxid, inclusive = inclusive)
 
   kraken_report_df[[colname]] <- kraken_report_df[["TaxonomyID"]] %in% child_taxids
 
@@ -478,7 +477,8 @@ igraph_to_taxonomy_table <- function(taxonomy){
 #' @export
 kraken_fetch_child_taxids <- function(taxonomy, taxid, inclusive = FALSE){
   # Find all descendants of taxid
-  descendants <- as.vector(igraph::subcomponent(taxonomy, v=taxid, mode = "out"))
+  indexes <- as.vector(igraph::subcomponent(taxonomy, v=taxid, mode = "out"))
+  descendants <- igraph::vertex_attr(graph = taxonomy, name = "names", index = indexes)
 
   if(!inclusive) descendants <- descendants[descendants!=taxid]
   return(descendants)
