@@ -510,6 +510,10 @@ kraken_fetch_child_taxids <- function(taxonomy, taxid, inclusive = FALSE){
 kraken_annotate_parents <- function(kraken_report_df, taxonomy, ancestor = "Ancestor"){
   df_taxonomies <- igraph_to_taxonomy_table(taxonomy)
   df_taxonomies$TaxonomyID <-  as.numeric(df_taxonomies$TaxonomyID)
+  df_taxonomies$Rank <- NULL
+  df_taxonomies$Level <- NULL
+  df_taxonomies$ScientificName <- NULL
+
   df_annotated <- dplyr::left_join(kraken_report_df, df_taxonomies, by = "TaxonomyID")
   df_annotated$ParentScientificName[is.na(df_annotated$ParentScientificName)] <- ancestor
   return(df_annotated)
@@ -523,6 +527,22 @@ kraken_annotate_parents <- function(kraken_report_df, taxonomy, ancestor = "Ance
 #' user-supplied set of ranks.
 #'
 #' @export
+#'
+#' @examples
+#' # Read in all kraken reports from a directory into a data.frame
+#' kreport_dir <- system.file(package="krakenR", "simulated_data/simulated_kraken_reports_inc_zero_counts/")
+#' taxonomy_path <- system.file(package="krakenR", "example_data/ktaxonomy.tsv")
+#'
+#' # Read in taxonomy
+#' df_kreports <- kraken_reports_parse(kreport_dir)
+#' taxonomy <- kraken_taxonomy_parse(taxonomy_path)
+#'
+#' # Filter for a specific sample
+#' df_kreports <- df_kreports[df_kreports$SampleID == "e_coli_1",]
+#'
+#' # Annotate parent taxids (useful for sunburst visualisation)
+#' df_kreports_annotated <- kraken_annotate_parents_(df_kreports, taxonomy)
+#'
 kraken_annotate_parents_at_ranks <- function(kraken_report_df,  taxonomy,
                                             ranks = c("S", "G", "F", "K"), ancestor = "Ancestor") {
 
@@ -538,7 +558,7 @@ kraken_annotate_parents_at_ranks <- function(kraken_report_df,  taxonomy,
   colnames(df_taxonomy) <- paste0("Parent",colnames(df_taxonomy))
   kraken_report_df <- dplyr::left_join(kraken_report_df, df_taxonomy, by = "ParentTaxonomyID")
   kraken_report_df$ParentScientificName[is.na(kraken_report_df$ParentScientificName)] <- ancestor
-  # browser()
+
   # taxonomy_reduced <- collapse_taxonomy_to_ranks(taxonomy, ranks)
   # df_annotated <- kraken_annotate_parents(kraken_report_df, taxonomy_reduced)
   # df_annotated$ParentTaxonomyID[is.na(df_annotated$ParentTaxonomyID)] <- ancestor
@@ -625,7 +645,6 @@ collapse_taxonomy_to_ranks <- function(g, valid_ranks,
   ranks  <- igraph::vertex_attr(g, rank_attr)
   taxids <- igraph::vertex_attr(g, taxid_attr)
 
-  # browser()
   if (is.null(ranks) || is.null(taxids)) {
     stop("Graph must have vertex attributes '", taxid_attr, "' and '", rank_attr, "'.")
   }
@@ -732,7 +751,6 @@ collapse_taxonomy_to_ranks <- function(g, valid_ranks,
 find_parent_with_rank <- function(taxonomy, taxids, ranks = c("S", "G", "F", "O"), noparent = NA){
   taxids_uniq <- unique(taxids)
 
-  # browser()
   taxids_in_index_order <- igraph::vertex_attr(graph = taxonomy, name = "name")
   ranks_in_index_order <- igraph::vertex_attr(graph = taxonomy, name = "Rank")
   sciname_in_index_order <- igraph::vertex_attr(graph = taxonomy, name = "ScientificName")
@@ -756,7 +774,6 @@ find_parent_with_rank <- function(taxonomy, taxids, ranks = c("S", "G", "F", "O"
     parents <- tail(x = parent_indexes, n=-1)
     ranks_of_parents <- ranks_in_index_order[parents]
     first_parent_with_valid_rank <- parents[which(ranks_of_parents %in% ranks)[1]]
-    # browser()
     taxids_in_index_order[first_parent_with_valid_rank]
     }, FUN.VALUE = character(1)
   )

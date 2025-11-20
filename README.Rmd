@@ -84,6 +84,13 @@ df_kreports_annotated <- df_kreports |>
     taxonomy = taxonomy, 
     ancestor = "Ancestor"
   )
+
+df_kreports_annotated <- df_kreports |>
+  kraken_annotate_parents_at_ranks(
+    taxonomy = taxonomy, 
+    ancestor = "Ancestor", 
+    ranks = c("S", "G", "F")
+  )
 ```
 
 

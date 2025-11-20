@@ -16,3 +16,19 @@ Given a taxonomy table parsed by \code{\link{kraken_taxonomy_parse}},
 compute, for each taxon, the closest ancestor whose rank is in a
 user-supplied set of ranks.
 }
+\examples{
+# Read in all kraken reports from a directory into a data.frame
+kreport_dir <- system.file(package="krakenR", "simulated_data/simulated_kraken_reports_inc_zero_counts/")
+taxonomy_path <- system.file(package="krakenR", "example_data/ktaxonomy.tsv")
+
+# Read in taxonomy
+df_kreports <- kraken_reports_parse(kreport_dir)
+taxonomy <- kraken_taxonomy_parse(taxonomy_path)
+
+# Filter for a specific sample
+df_kreports <- df_kreports[df_kreports$SampleID == "e_coli_1",]
+
+# Annotate parent taxids (useful for sunburst visualisation)
+df_kreports_annotated <- kraken_annotate_parents_(df_kreports, taxonomy)
+
+}
