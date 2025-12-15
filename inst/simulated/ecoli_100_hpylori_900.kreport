@@ -1,0 +1,35 @@
+  1.45	29	29	U	0	unclassified
+ 98.55	1967	1	R	1	root
+ 98.50	1966	0	R1	131567	  cellular organisms
+ 98.50	1966	3	D	2	    Bacteria
+ 88.73	1771	0	P	29547	      Campylobacterota
+ 88.73	1771	0	C	3031852	        Epsilonproteobacteria
+ 88.73	1771	0	O	213849	          Campylobacterales
+ 88.73	1771	1	F	72293	            Helicobacteraceae
+ 88.68	1770	7	G	209	              Helicobacter
+ 88.33	1763	1753	S	210	                Helicobacter pylori
+  0.05	1	1	S1	85962	                  Helicobacter pylori 26695
+  0.05	1	1	S1	1321939	                  Helicobacter pylori UM037
+  0.05	1	1	S1	1055528	                  Helicobacter pylori Puno120
+  0.05	1	1	S1	1055527	                  Helicobacter pylori ELS37
+  0.05	1	1	S1	907239	                  Helicobacter pylori SouthAfrica7
+  0.05	1	1	S1	907238	                  Helicobacter pylori India7
+  0.05	1	1	S1	869727	                  Helicobacter pylori 908
+  0.05	1	1	S1	765963	                  Helicobacter pylori PeCan4
+  0.05	1	1	S1	637913	                  Helicobacter pylori v225d
+  0.05	1	1	S1	592205	                  Helicobacter pylori B38
+  9.57	191	0	P	1224	      Pseudomonadota
+  9.57	191	0	C	1236	        Gammaproteobacteria
+  9.57	191	3	O	91347	          Enterobacterales
+  9.42	188	176	F	543	            Enterobacteriaceae
+  0.45	9	3	G	561	              Escherichia
+  0.30	6	6	S	562	                Escherichia coli
+  0.10	2	1	G	620	              Shigella
+  0.05	1	1	S	623	                Shigella flexneri
+  0.05	1	1	G	158483	              Cedecea
+  0.05	1	0	P	3018035	      Bdellovibrionota
+  0.05	1	0	C	1553900	        Oligoflexia
+  0.05	1	0	O	2024973	          Silvanigrellales
+  0.05	1	0	F	2024974	            Silvanigrellaceae
+  0.05	1	0	G	2024975	              Silvanigrella
+  0.05	1	1	S	1915309	                Silvanigrella aquatica

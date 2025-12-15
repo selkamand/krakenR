@@ -54,6 +54,7 @@ kraken_report_parse <- function(path_to_kreport, sample_id = NULL, verbose = TRU
 #' To parse a single kraken report - see
 #'
 #' @param kraken2directory path to a directory filled with ONLY kraken2 reports
+#' @param suffix a suffix by which kraken reports will be identified
 #'
 #' @return a dataframe describing all samples kraken reports
 #' @export
@@ -62,11 +63,11 @@ kraken_report_parse <- function(path_to_kreport, sample_id = NULL, verbose = TRU
 #' directory = system.file("simulated_data/simulated_kraken_reports", package = "krakenR")
 #' kraken_reports_parse(directory)
 #'
-kraken_reports_parse <- function(kraken2directory){
+kraken_reports_parse <- function(kraken2directory, suffix = "kreport"){
 
   assertthat::assert_that(dir.exists(kraken2directory), msg = paste0("Could not find directory: ", kraken2directory))
   kreport_headings <- c("PercentReadsCoveredByCladeLowResolution","ReadsCoveredByClade", "ReadsDirectlyAssigned", "Rank", "TaxonomyID", "ScientificName")
-  krakenreportpaths <- dir(path = kraken2directory, full.names = TRUE, recursive = FALSE, include.dirs = FALSE)
+  krakenreportpaths <- dir(path = kraken2directory, full.names = TRUE, recursive = FALSE, include.dirs = FALSE, pattern = sprintf(".%s", suffix))
 
   # Read Files into one huge df
   kraken_reports_df <- data.table::rbindlist(
@@ -134,7 +135,6 @@ kraken_report_add_descendancy_status <- function(kraken_report_df, taxonomy, tax
   taxid <- as.character(taxid)
   ls_child_taxids <- lapply(unique(taxid), function(t){ kraken_fetch_child_taxids(taxonomy, taxid = taxid, inclusive=inclusive)})
   child_taxids <- unique(unlist(ls_child_taxids))
-
   kraken_report_df[[colname]] <- kraken_report_df[["TaxonomyID"]] %in% child_taxids
 
   return(kraken_report_df)
@@ -452,11 +452,12 @@ igraph_to_taxonomy_table <- function(taxonomy){
   colnames(df_vertex_annotation_direct) <- c("TaxonomyID", "Rank", "Level", "ScientificName")
 
   colnames(dt_edges) <- c("TaxonomyID", "ParentTaxonomyID")
-  dt_edges <- dt_edges |>
-    dplyr::left_join(df_vertex_annotation_direct, by = "TaxonomyID") |>
+
+  df_taxonomy_table <- df_vertex_annotation_direct |>
+    dplyr::left_join(dt_edges, by = "TaxonomyID") |>
     dplyr::left_join(ls_graph$vertices, by = "ParentTaxonomyID")
 
-  return(dt_edges)
+  return(df_taxonomy_table)
 
 
 }
@@ -476,10 +477,11 @@ igraph_to_taxonomy_table <- function(taxonomy){
 #' @return This function returns the same dataframe from \strong{kraken_report_df} produced by \link{kraken_reports_parse} or link{kraken_report_parse}  but with  a new columns describing inclusive descendancey status to a particular taxid
 #' @export
 kraken_fetch_child_taxids <- function(taxonomy, taxid, inclusive = FALSE){
+
   # Find all descendants of taxid
   taxid <- as.character(taxid)
   indexes <- as.vector(igraph::subcomponent(taxonomy, v=taxid, mode = "out"))
-  descendants <- igraph::vertex_attr(graph = taxonomy, name = "names", index = indexes)
+  descendants <- igraph::vertex_attr(graph = taxonomy, name = "name", index = indexes)
 
   if(!inclusive) descendants <- descendants[descendants!=taxid]
   return(descendants)

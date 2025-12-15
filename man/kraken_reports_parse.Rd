@@ -4,10 +4,12 @@
 \alias{kraken_reports_parse}
 \title{Parse Kraken Reports}
 \usage{
-kraken_reports_parse(kraken2directory)
+kraken_reports_parse(kraken2directory, suffix = "kreport")
 }
 \arguments{
 \item{kraken2directory}{path to a directory filled with ONLY kraken2 reports}
+
+\item{suffix}{a suffix by which kraken reports will be identified}
 }
 \value{
 a dataframe describing all samples kraken reports

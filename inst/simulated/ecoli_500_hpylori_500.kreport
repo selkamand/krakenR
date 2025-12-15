@@ -1,0 +1,35 @@
+  1.40	28	28	U	0	unclassified
+ 98.60	1970	7	R	1	root
+ 98.25	1963	0	R1	131567	  cellular organisms
+ 98.25	1963	9	D	2	    Bacteria
+ 49.30	985	0	P	29547	      Campylobacterota
+ 49.30	985	0	C	3031852	        Epsilonproteobacteria
+ 49.30	985	0	O	213849	          Campylobacterales
+ 49.30	985	1	F	72293	            Helicobacteraceae
+ 49.25	984	4	G	209	              Helicobacter
+ 49.05	980	972	S	210	                Helicobacter pylori
+  0.05	1	1	S1	85962	                  Helicobacter pylori 26695
+  0.05	1	1	S1	1321939	                  Helicobacter pylori UM037
+  0.05	1	1	S1	1055528	                  Helicobacter pylori Puno120
+  0.05	1	1	S1	1055527	                  Helicobacter pylori ELS37
+  0.05	1	1	S1	907239	                  Helicobacter pylori SouthAfrica7
+  0.05	1	1	S1	869727	                  Helicobacter pylori 908
+  0.05	1	1	S1	765963	                  Helicobacter pylori PeCan4
+  0.05	1	1	S1	592205	                  Helicobacter pylori B38
+ 48.50	969	1	P	1224	      Pseudomonadota
+ 48.45	968	1	C	1236	        Gammaproteobacteria
+ 48.40	967	11	O	91347	          Enterobacterales
+ 47.85	956	883	F	543	            Enterobacteriaceae
+  3.35	67	29	G	561	              Escherichia
+  1.75	35	35	S	562	                Escherichia coli
+  0.05	1	1	S	564	                Escherichia fergusonii
+  0.05	1	1	S	208962	                Escherichia albertii
+  0.05	1	1	S	1499973	                Escherichia marmotae
+  0.10	2	1	G	620	              Shigella
+  0.05	1	1	S	623	                Shigella flexneri
+  0.05	1	1	G	544	              Citrobacter
+  0.05	1	0	G	2726810	              Scandinavium
+  0.05	1	1	S	1851514	                Scandinavium goeteborgense
+  0.05	1	0	G	1330547	              Kosakonia
+  0.05	1	1	S	1158459	                Kosakonia sacchari
+  0.05	1	1	G	158483	              Cedecea

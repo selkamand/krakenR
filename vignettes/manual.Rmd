@@ -1,0 +1,105 @@
+---
+title: "Manual"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Manual}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+[Kraken2](https://ccb.jhu.edu/software/kraken2/) is an extremely fast taxonomic sequence classification system that lets you take DNA sequences and classify each against a custom database (usually composed of microbial DNA).
+
+Once this classification has been run on multiple samples you need some way of analysing the results at the cohort level. This package attempts to simplify that process.
+
+## Common Cohort Study Design
+
+-   Microbiome analysis. Run Kraken2 on many samples. Goal is to see how microbiome changes between different groups.
+
+-   Pathogen Screening. Run Kraken2 on many samples and detect samples with unexpectedly high support for some specific pathogen
+
+# Step 1: Setup
+
+## Run Kraken2 and Prepare Inputs
+
+Before leveraging this package, run kraken2 on each of your samples, making sure to use the `--report` option to output kraken reports.
+
+**Naming Style**:
+
+-   Make sure your kraken reports start with a sample name. This package assumes everything before the first **.** is the sample name. (e.g. '<sample_name>.<everythinghereisignored>.kreport')
+
+**For Cohort Analysis:**
+
+-   Move all kraken reports to a single directory
+
+-   There should be only one kreport per sample
+
+## Install dependencies
+
+```{r eval=FALSE}
+if (!require("remotes"))
+    install.packages("remotes")
+
+remotes::install_github("selkamand/krakenR")
+```
+
+## Load libraries
+
+```{r}
+library(krakenR)
+```
+
+
+# Step 2: Read data
+
+`krakenR` works by first reading a directory full of kraken reports into memory, running some basic computations and produces large dataframes to work with in future.
+
+```{r}
+dir_reports <- system.file(package="krakenR", "simulated/")
+reports <- kraken_reports_parse(dir_reports)
+```
+
+You will also usually want to parse the `ktaxonomy.tsv` file associated with the database you ran kraken with. This is used in many downstream plotting / analysis functions.
+
+A prebuilt ktaxonomy.tsv is included with all modern langmead et al. precompiled databases, or can be created using [KrakenTools](https://github.com/jenniferlu717/KrakenTools)
+
+```{r}
+path_taxonomy <- system.file(package="krakenR", "example_data/ktaxonomy.tsv")
+taxonomy <- kraken_taxonomy_parse(path_taxonomy)
+```
+
+
+## Step 3: Annotate data with parents
+
+```{r}
+kraken_annotate_parents(reports, taxonomy, ancestor = "ultimate_ancestor") |>
+  dplyr::select(SampleID, ScientificName, Rank, TaxonomyID, ParentScientificName, ParentTaxonomyID)
+```
+
+
+```{r}
+kraken_report_add_descendancy_status(reports, taxonomy, taxid = 209, colname = "Helicobacteraceae", inclusive = TRUE) |>
+  dplyr::filter(Helicobacteraceae) |> View()
+```
+
+
+```{r}
+kraken_annotate_parents_at_ranks(reports, taxonomy = taxonomy, ranks = c("D", "G", "S")) |>
+  dplyr::select(SampleID, ScientificName, Rank, TaxonomyID, ParentScientificName, ParentTaxonomyID) |> View()
+```
+
+
+## Step 4: Visualise Sunburst Plot
+
+```{r}
+kraken_visualise_sunburst(reports, taxonomy = taxonomy, sample = "ecoli_500_hpylori_500", insidetextorientation = "tangential")
+```
+

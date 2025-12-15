@@ -1,0 +1,35 @@
+  1.20	24	24	U	0	unclassified
+ 98.80	1976	14	R	1	root
+ 98.10	1962	0	R1	131567	  cellular organisms
+ 98.10	1962	12	D	2	    Bacteria
+ 87.65	1753	4	P	1224	      Pseudomonadota
+ 87.45	1749	2	C	1236	        Gammaproteobacteria
+ 87.35	1747	18	O	91347	          Enterobacterales
+ 86.45	1729	1588	F	543	            Enterobacteriaceae
+  6.60	132	62	G	561	              Escherichia
+  3.30	66	65	S	562	                Escherichia coli
+  0.05	1	0	S1	83334	                  Escherichia coli O157:H7
+  0.05	1	1	S2	155864	                    Escherichia coli O157:H7 str. EDL933
+  0.10	2	2	S	1499973	                Escherichia marmotae
+  0.05	1	1	S	564	                Escherichia fergusonii
+  0.05	1	1	S	208962	                Escherichia albertii
+  0.15	3	1	G	620	              Shigella
+  0.05	1	1	S	621	                Shigella boydii
+  0.05	1	1	S	623	                Shigella flexneri
+  0.10	2	1	G	544	              Citrobacter
+  0.05	1	1	S	1563222	                Citrobacter pasteurii
+  0.05	1	0	F1	2890311	              Klebsiella/Raoultella group
+  0.05	1	0	G	570	                Klebsiella
+  0.05	1	1	S	1463165	                  Klebsiella quasipneumoniae
+  0.05	1	0	G	2726810	              Scandinavium
+  0.05	1	1	S	1851514	                Scandinavium goeteborgense
+  0.05	1	0	G	1330547	              Kosakonia
+  0.05	1	1	S	1158459	                Kosakonia sacchari
+  0.05	1	1	G	158483	              Cedecea
+  9.85	197	0	P	29547	      Campylobacterota
+  9.85	197	0	C	3031852	        Epsilonproteobacteria
+  9.85	197	0	O	213849	          Campylobacterales
+  9.85	197	0	F	72293	            Helicobacteraceae
+  9.85	197	1	G	209	              Helicobacter
+  9.80	196	195	S	210	                Helicobacter pylori
+  0.05	1	1	S1	1055528	                  Helicobacter pylori Puno120

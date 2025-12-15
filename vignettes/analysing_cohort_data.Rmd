@@ -45,7 +45,9 @@ Before leveraging this package, run kraken2 on each of your samples, making sure
 ## Install dependencies
 
 ```{r eval=FALSE}
-# install.packages("remotes")
+if (!require("remotes"))
+    install.packages("remotes")
+
 remotes::install_github("selkamand/krakenR")
 ```
 

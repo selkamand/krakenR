@@ -557,4 +557,8 @@ kraken_visualise_sunburst <- function(kraken_report_df, taxonomy, sample,
 
 }
 
+kraken_visualise_sankey <- function(){
+
+}
+
 

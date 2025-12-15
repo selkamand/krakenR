@@ -1,0 +1,32 @@
+  1.20	24	24	U	0	unclassified
+ 98.80	1976	16	R	1	root
+ 98.00	1960	0	R1	131567	  cellular organisms
+ 98.00	1960	12	D	2	    Bacteria
+ 97.40	1948	5	P	1224	      Pseudomonadota
+ 97.15	1943	3	C	1236	        Gammaproteobacteria
+ 97.00	1940	20	O	91347	          Enterobacterales
+ 96.00	1920	1763	F	543	            Enterobacteriaceae
+  7.25	145	66	G	561	              Escherichia
+  3.75	75	74	S	562	                Escherichia coli
+  0.05	1	0	S1	83334	                  Escherichia coli O157:H7
+  0.05	1	1	S2	155864	                    Escherichia coli O157:H7 str. EDL933
+  0.10	2	2	S	1499973	                Escherichia marmotae
+  0.05	1	1	S	564	                Escherichia fergusonii
+  0.05	1	1	S	208962	                Escherichia albertii
+  0.15	3	2	G	544	              Citrobacter
+  0.05	1	1	S	1563222	                Citrobacter pasteurii
+  0.15	3	1	G	620	              Shigella
+  0.05	1	1	S	621	                Shigella boydii
+  0.05	1	1	S	623	                Shigella flexneri
+  0.10	2	0	F1	2890311	              Klebsiella/Raoultella group
+  0.10	2	0	G	570	                Klebsiella
+  0.05	1	1	S	573	                  Klebsiella pneumoniae
+  0.05	1	1	S	1463165	                  Klebsiella quasipneumoniae
+  0.05	1	0	G	547	              Enterobacter
+  0.05	1	0	G1	2608935	                unclassified Enterobacter
+  0.05	1	1	S	2724468	                  Enterobacter sp. JUb54
+  0.05	1	0	G	2726810	              Scandinavium
+  0.05	1	1	S	1851514	                Scandinavium goeteborgense
+  0.05	1	0	G	1330547	              Kosakonia
+  0.05	1	1	S	1158459	                Kosakonia sacchari
+  0.05	1	1	G	158483	              Cedecea

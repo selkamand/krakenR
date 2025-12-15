@@ -1,5 +1,0 @@
-10 FASTQs (1 per 'sample') with 3000 reads each were simulated (using ART) from E. coli and L. monocytogenes reference genomes (GCF_000008865.2 & GCF_000196035.1 respectively)
-
-The fastqs were then classified using the minikraken 8G db.
-
-2 version of kraken reports were produced for each sample. One where taxids with zero hits were included (simulated_kraken_reports_inc_zero_counts), and one without (simulated_kraken_reports)
