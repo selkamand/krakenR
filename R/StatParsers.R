@@ -6,6 +6,8 @@
 #' this value is usually a good proxy
 #' for the total number of reads fed into the aligner.
 #'
+#' Note both forward and reverse reads contribute independently to this count.
+#'
 #' @param flagstats path to a 'flagstats' file created by \code{samtools flagstat <bam>}
 #'
 #' @returns total number of primary alignments (whether or not they pass or fail QC)

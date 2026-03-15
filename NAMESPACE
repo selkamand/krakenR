@@ -3,6 +3,7 @@
 export("%>%")
 export(collapse_taxonomy_to_ranks)
 export(filepath_get_sequence_type)
+export(flagstats_to_total_primary_reads)
 export(kraken_annotate_parents)
 export(kraken_annotate_parents_at_ranks)
 export(kraken_calculate_proportion_of_signal_explained_by_n_strongest_taxids)

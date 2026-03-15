@@ -17,3 +17,6 @@ Since most aligners keep unmapped reads and label them as primary -
 this value is usually a good proxy
 for the total number of reads fed into the aligner.
 }
+\details{
+Note both forward and reverse reads contribute independently to this count.
+}
